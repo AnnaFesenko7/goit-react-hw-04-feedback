@@ -1,0 +1,13 @@
+.buttonWrapper {
+  display: flex;
+  align-items: center;
+}
+.button {
+  color: #000;
+  height: 30px;
+  width: 100px;
+  margin-right: 10px;
+}
+.button:last-child {
+  margin-right: 0;
+}
