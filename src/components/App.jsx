@@ -1,54 +1,51 @@
 import Feedback from './Feedback/Feedback';
-import React, { Component } from 'react';
 
-export default class App extends Component {
-  state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
-    total: 0,
-    positive: 0,
+import { useState, useEffect } from 'react';
+
+export default function App() {
+  const [good, setGood] = useState(0);
+  const [neutral, setNeutral] = useState(0);
+  const [bad, setBad] = useState(0);
+  const [total, setTotal] = useState(0);
+  const [positive, setPositive] = useState(0);
+
+  const onLeaveFeedback = name => {
+    switch (name) {
+      case 'good':
+        setGood(good + 1);
+        break;
+      case 'neutral':
+        setNeutral(neutral + 1);
+        break;
+      case 'bad':
+        setBad(bad + 1);
+        break;
+      default:
+        return;
+    }
   };
 
-  onLeaveFeedback = name => {
-    this.setState(prevState => {
-      for (const key in prevState) {
-        if (key === name) {
-          return { [key]: prevState[key] + 1 };
-        }
-      }
-    }, this.countTotalFeedback);
-  };
+  useEffect(() => {
+    const totalClick = good + neutral + bad;
+    setTotal(totalClick);
+  }, [good, neutral, bad]);
 
-  countTotalFeedback = () => {
-    this.setState(
-      prevState => ({
-        total: prevState.total + 1,
-      }),
-      this.countPositiveFeedbackPercentage
-    );
-  };
+  useEffect(() => {
+    setPositive((good / total) * 100);
+  }, [total, good]);
 
-  countPositiveFeedbackPercentage = () => {
-    this.setState(prevState => ({
-      positive: (prevState.good / prevState.total) * 100,
-    }));
-  };
-
-  render() {
-    return (
+  return (
+    <div>
       <div>
-        <div>
-          <Feedback
-            good={this.state.good}
-            neutral={this.state.neutral}
-            bad={this.state.bad}
-            total={this.state.total}
-            positive={this.state.positive}
-            onLeaveFeedback={this.onLeaveFeedback}
-          />
-        </div>
+        <Feedback
+          good={good}
+          neutral={neutral}
+          bad={bad}
+          total={total}
+          positive={positive}
+          onLeaveFeedback={onLeaveFeedback}
+        />
       </div>
-    );
-  }
+    </div>
+  );
 }
